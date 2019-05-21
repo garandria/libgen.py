@@ -24,11 +24,12 @@ Usage
     Read more, kids.
 
     optional arguments:
-      -h, --help            show this help message and exit
-      -s SEARCH, --search SEARCH
-                            search term
-      -n, --non-interactive
-                            non interactive mode, download first available choice
+	  -h, --help            show this help message and exit
+	  -s SEARCH, --search SEARCH
+	                        search term
+	  -n, --non-interactive
+	                        non interactive mode, download first available choice
+	  -a, --all             download every book from the result
 
 
 Dependencies
