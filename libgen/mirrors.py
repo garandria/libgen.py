@@ -54,20 +54,24 @@ class Mirror(ABC):
             values.append(attrs)
         return (list(headers), values)
 
-    def run(self, non_interactive=False):
-        try:
+    def run(self, non_interactive=False, download_all=False):
+        if download_all:
             for publications in self.search():
-                if non_interactive:
-                    selected = publications[0]
-                else:
-                    selected = self.select(publications)
-
-                if selected:
-                    self.download(selected)
-                    # TODO: 'Downloaded X MB in Y seconds.'
-                    break
-        except NoResults as e:
-            print(e)
+                for book in publications:
+                    self.download(book)
+        else:
+            try:
+                for publications in self.search():
+                    if non_interactive:
+                        selected = publications[0]
+                    else:
+                        selected = self.select(publications)
+                    if selected:
+                        self.download(selected)
+                        # TODO: 'Downloaded X MB in Y seconds.'
+                        break
+            except NoResults as e:
+                print(e)
 
     def search(self, start_at: int = 1) -> Generator[bs4.BeautifulSoup, None, None]:
         """
