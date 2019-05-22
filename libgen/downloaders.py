@@ -9,6 +9,8 @@ from bs4 import BeautifulSoup
 from .exceptions import CouldntFindDownloadUrl
 from .utils import random_string
 
+from tqdm import tqdm
+
 
 class MirrorDownloader(ABC):
     def __init__(self, url: str, timeout: int = 10) -> None:
@@ -29,11 +31,16 @@ class MirrorDownloader(ABC):
         r = get(self.url, self.timeout)
         html = BeautifulSoup(r.text, 'html.parser')
         download_url = self.get_download_url(html)
+        #
+        file_header = requests.head(download_url)
+        file_size = int(file_header.headers['content-length'])
         if download_url is None:
             raise CouldntFindDownloadUrl(self.url)
         filename = publication.filename()
         print(f"Downloading '{filename}'")
-        data = get(download_url, self.timeout, stream=True)
+        for i in tqdm(iterable=range(file_size),
+                      unit_scale=True):
+            data = get(download_url, self.timeout, stream=True)
         save_file(filename, data)
 
     @abc.abstractmethod
